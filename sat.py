@@ -1,18 +1,32 @@
 # Polynomial Time SAT Verifier
 
-def is_sat(cnf_formula, assignment):
+def is_sat(formula, assignment):
     """
-    Check if a given assignment of truth values to the variables in a formula satisfies the formula.
+    Check if a given assignment of truth values to the variables satisfies a formula.
     
     Parameters:
-    cnf_formula -- a list of clauses, where each clause is a list of literals
-                   positive numbers represent variables, negative numbers represent negated variables
+    formula -- a list of elements, where each element is either:
+               - a clause (list of literals) in CNF form, or
+               - a tuple (A, B) representing an implication A → B
+               Positive numbers represent variables, negative numbers represent negated variables.
     assignment -- a list where assignment[i] represents the truth value of variable i+1
                   1 means True, 0 means False
     
     Returns:
     True if the assignment satisfies the formula, False otherwise
     """
+    # convert to CNF
+    cnf_formula = []
+    for element in formula:
+        if isinstance(element, tuple) and len(element) == 2:
+            # convert implication to or
+            antecedent, consequent = element
+            negated_antecedent = -antecedent
+            implication_clause = [negated_antecedent, consequent]
+            cnf_formula.append(implication_clause)
+        else:
+            cnf_formula.append(element)
+    # check satisfiability
     for clause in cnf_formula:
         clause_satisfied = False
         for literal in clause:
@@ -30,7 +44,3 @@ def is_sat(cnf_formula, assignment):
             return False
     
     return True
-
-print("Example 1:", is_sat([[1, 2], [1, 3], [2, 3]], [1, 1, 0]))
-print("Example 2:", is_sat([[1, 2], [-1, 3], [-2, -3]], [0, 1, 1]))
-print("Example 3:", is_sat([[1, 2], [1, 3], [2, 3]], [0, 0, 0]))
