@@ -44,3 +44,23 @@ def is_sat(formula, assignment):
             return False
     
     return True
+
+# Add these examples at the bottom:
+from cnf_converter import parse_to_cnf
+
+# Test with English-like formulas
+test_formulas = [
+    ("p implies (q or r)", [1, 1, 0]),  # p=True, q=True, r=False
+    ("p implies (q or r)", [1, 0, 0]),  # p=True, q=False, r=False (should be False)
+    ("p implies (q or r)", [0, 0, 0]),  # p=False, q=False, r=False (should be True)
+]
+
+print("\nTesting English-like formulas:")
+for formula, assignment in test_formulas:
+    cnf = parse_to_cnf(formula)
+    result = is_sat(cnf, assignment)
+    print(f"\nFormula: {formula}")
+    print(f"CNF format: {cnf}")
+    print(f"Assignment: {assignment}")
+    print(f"Result: {result}")
+
